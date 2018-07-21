@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>table</title>
+</head>
+<body>
+    <div th:fragment="table">
+        <p>在线答题系统</p>
+        <table class="table table-striped">
+            <tr>
+                <th>试题序号</th>
+                <th>试题题目</th>
+                <th>选项A</th>
+                <th>选项B</th>
+                <th>选项C</th>
+                <th>选项D</th>
+                <th>答案选择</th>
+            </tr>
+            <tr class="table-row-cell" th:each="question : ${questions}">
+                <td th:text="${question.questionCode}">000</td>
+                <td th:text="${question.title}">试题题目加载错误</td>
+                <td th:text="${question.optionA}">试题选项加载错误</td>
+                <td th:text="${question.optionB}">试题选项加载错误</td>
+                <td th:text="${question.optionC}">试题选项加载错误</td>
+                <td th:text="${question.optionD}">试题选项加载错误</td>
+                <td>
+                    <input type="radio" th:name="${question.questionCode}" value="A" >
+                    <input type="radio" th:name="${question.questionCode}" value="B" >
+                    <input type="radio" th:name="${question.questionCode}" value="C" >
+                    <input type="radio" th:name="${question.questionCode}" value="D" >
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

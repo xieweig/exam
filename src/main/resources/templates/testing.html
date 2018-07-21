@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.1.0/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="webjars/jquery/3.0.0/jquery.js"></script>
+</head>
+
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+
+
+<div class="container">
+    <div class="starter-template">
+        <h1>考试页面 无需登录 一定要输入学号 同一学号不能重复提交</h1>
+    </div>
+</div>
+
+<div th:replace="fragments/table :: table"></div>
+
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

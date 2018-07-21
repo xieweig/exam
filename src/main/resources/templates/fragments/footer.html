@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.1.0/css/bootstrap.css" />
+</head>
+<body>
+<div th:fragment="footer">
+    <div th:if="${#httpServletRequest.remoteUser}" class="container">
+        <footer>
+            <!-- this is footer -->
+                <a class="btn btn-sm btn-secondary btn-block " th:href="@{/logout}">爱你哟 logout</a>
+            </span>
+        </footer>
+    </div>
+</div>
+</body>

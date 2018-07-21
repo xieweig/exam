@@ -1,0 +1,24 @@
+
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.1.0/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="webjars/jquery/3.0.0/jquery.js"></script>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+<div class="container">
+    <div class="starter-template">
+        <h1>教师界面，请于此导入试题，开放考试，结束考试，导出成绩单</h1>
+    </div>
+    <div th:replace="fragments/inout :: logout"></div>
+</div>
+
+
+
+
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
