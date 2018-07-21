@@ -1,10 +1,10 @@
 package org.grow.exam.controller;
 
-import org.grow.exam.domain.ClassInfo;
-import org.grow.exam.domain.Question;
-import org.grow.exam.domain.StandardAnswer;
+import org.grow.exam.domain.*;
 import org.grow.exam.infrastruture.JpaQuestion;
+import org.grow.exam.infrastruture.JpaResult;
 import org.grow.exam.infrastruture.PoiQuestion;
+import org.grow.exam.infrastruture.RandomString;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -60,7 +62,10 @@ public class ExamHandler {
         jpaQuestion.deleteAll();
     }
 
-
+    /**
+    **
+    * xieweig notes: 第一步教师通过提交excel文件 录入试题和正确答案
+    */
     @PostMapping(value = "/upLoadQuestions")
     public List<Question> upLoad(@RequestParam MultipartFile file, @RequestParam int startRow, @RequestParam int size) throws IOException {
 
@@ -75,8 +80,62 @@ public class ExamHandler {
 
 
     }
+    /**
+    **
+    * xieweig notes: 第二步教师通过录入本次考试的相关信息，如考试科目和考试班级 第几次课堂测验 等信息
+    */
     @PostMapping(value = "/classInfo")
-    public void saveClassInfo(@RequestBody ClassInfo classInfo){
+    public Boolean saveClassInfo(@RequestBody ClassInfo classInfo){
+        standardAnswer.setClassInfo(classInfo);
+        return true;
+    }
+    /**
+    **
+    * xieweig notes: 第三步，考生访问答题界面后，提交答题卡，后台接受答题卡并直接计算出正确答案，把每一份答案持久化到数据库
+    */
+    @Resource
+    private JpaResult jpaResult;
+    @Resource
+    private RandomString randomString;
+    @PutMapping(value = "/submit")
+    public String submit(@RequestBody AnswerSheet answerSheet){
+
+
+        Result result = new Result();
+
+        /**
+        **
+        * xieweig notes: 比较答案
+        */
+        Map<String,Integer> answers = answerSheet.getAnswers();
+        Map<String,Integer> correctAnswers = standardAnswer.getCorrectAnswers();
+        for (String key : answers.keySet()) {
+            System.out.println(answers.get(key));
+            /**
+            **
+            * xieweig notes: 如果不符合正确答案，那么就认为错误，此处只要求答题卡是单选题，正确答案可以是多个 例如答题卡选A正确答案是AC
+            */
+            if ((answers.get(key) & correctAnswers.get(key)) == 0){
+                 result.getWrongsCode().add(key);
+
+            }
+
+
+        }
+
+        result.setWrongs(result.getWrongsCode().toString());
+        result.setTotalScore(100 - result.getWrongsCode().size() *100 /correctAnswers.size());
+        
+        /**
+        **
+        * xieweig notes: 基本信息设置
+        */
+        result.setClassInfo(standardAnswer.getClassInfo());
+        result.setMemberCode(answerSheet.getMemberCode());
+        result.setResultCode(randomString.random5String("Result"));
+        result.setResultType(Result.ResultType.allright);
+        jpaResult.save(result);
+        return result.getWrongs();
 
     }
 

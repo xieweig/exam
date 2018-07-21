@@ -38,7 +38,9 @@ public class SecurityRC extends WebSecurityConfigurerAdapter {
                 .and()
                 .withUser("xwg").password(passwordEncoder().encode("123")).roles("ADMIN")
                 .and()
-                .withUser("super").password(passwordEncoder().encode("superman")).roles("ADMIN", "TRAINER");
+                .withUser("super").password(passwordEncoder().encode("superman")).roles("ADMIN", "TRAINER","GUEST")
+                .and()
+                .withUser("guest").password(passwordEncoder().encode("guest")).roles("STUDENT");
 
     }
 
@@ -66,9 +68,10 @@ public class SecurityRC extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "**/favicon.ico").permitAll()
-                .antMatchers("/", "/index", "/student").permitAll()
+                .antMatchers("/", "/index").permitAll()
                 .antMatchers("/admin/**").hasAnyRole("ADMIN")
                 .antMatchers("/trainer/**").hasAnyRole("TRAINER")
+                .antMatchers("/student/**").hasAnyRole("STUDENT")
                 .anyRequest().authenticated();
 
 

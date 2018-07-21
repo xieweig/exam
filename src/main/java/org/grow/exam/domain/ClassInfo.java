@@ -23,4 +23,6 @@ public class ClassInfo {
         uml, junit, spring
     }
 
+    private Integer times = 1;
+
 }

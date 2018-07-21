@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class Result {
 
     @Enumerated(EnumType.STRING)
     private ResultType resultType = ResultType.allright;
-    private enum  ResultType {
+    public enum  ResultType {
         allright , frozen
     }
 
@@ -41,10 +42,11 @@ public class Result {
 
     private String memberCode;
 
-    private List<String> wrongs = new LinkedList<>();
+    private String wrongs ;
 
     private Integer totalScore;
 
-
+    @org.springframework.data.annotation.Transient
+    private List<String> wrongsCode = new ArrayList<>();
 
 }

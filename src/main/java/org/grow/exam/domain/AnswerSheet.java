@@ -1,6 +1,8 @@
 package org.grow.exam.domain;
 
 
+import lombok.Data;
+
 import java.util.*;
 
 /**
@@ -9,6 +11,7 @@ import java.util.*;
  * <p>
  * Description:学生提交上来的vo 经过与正确答案比较计算后生成待持久化的实体信息，也就是
  */
+@Data
 public class AnswerSheet {
 
 
