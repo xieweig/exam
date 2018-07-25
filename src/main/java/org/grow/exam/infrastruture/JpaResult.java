@@ -15,4 +15,6 @@ import org.springframework.stereotype.Repository;
 public interface JpaResult extends JpaRepository<Result, Long>,JpaSpecificationExecutor<Result> {
 
     Result findByMemberCode(String memberCode);
+
+    Result findByResultCode(String resultCode);
 }

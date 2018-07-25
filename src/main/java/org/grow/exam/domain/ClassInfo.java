@@ -2,12 +2,15 @@ package org.grow.exam.domain;
 
 import lombok.Data;
 
+import javax.persistence.Embeddable;
+
 /**
  * Author : xieweig
  * Date : 18-7-20
  * <p>
  * Description:
  */
+@Embeddable
 @Data
 public class ClassInfo {
     private Grade grade = Grade.java1;

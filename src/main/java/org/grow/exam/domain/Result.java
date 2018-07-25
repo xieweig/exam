@@ -46,7 +46,7 @@ public class Result {
 
     private Integer totalScore;
 
-    @org.springframework.data.annotation.Transient
+    @Transient
     private List<String> wrongsCode = new ArrayList<>();
 
 }

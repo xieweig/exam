@@ -57,8 +57,8 @@ public class ExamHandler {
 
     }
     @Transactional
-    @GetMapping(value = "/delete")
-    public void deleteAll(){
+    @GetMapping(value = "/questions")
+    public void deleteQuestions(){
         jpaQuestion.deleteAll();
     }
 
@@ -67,9 +67,12 @@ public class ExamHandler {
     * xieweig notes: 第一步教师通过提交excel文件 录入试题和正确答案
     */
     @PostMapping(value = "/upLoadQuestions")
-    public List<Question> upLoad(@RequestParam MultipartFile file, @RequestParam int startRow, @RequestParam int size) throws IOException {
+    public List<Question> upLoad(@RequestParam MultipartFile file,
+                                 @RequestParam(required = false) int startRow,
+                                 @RequestParam(required = false) int size) throws IOException {
 
-        if (startRow == 0 || size == 0) { startRow= 1;  size=20 ;}
+        if (startRow == 0) startRow =1;
+        if (size == 0) size =20;
 
         standardAnswer.setCorrectAnswers(poiQuestion.readStandardAnswer(file.getInputStream(),startRow,size));
         System.err.println(standardAnswer.getCorrectAnswers());
@@ -138,5 +141,14 @@ public class ExamHandler {
         return result.getWrongs();
 
     }
+    @GetMapping("/result/{memberCode}")
+    public Result getOne(@PathVariable String memberCode){
+        return jpaResult.findByMemberCode(memberCode);
+    }
 
+    @DeleteMapping("/results")
+    @Transactional
+    public void deleteResults(){
+        jpaResult.deleteAll();
+    }
 }
