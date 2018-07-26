@@ -68,7 +68,7 @@ public class SecurityRC extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "**/favicon.ico").permitAll()
-                .antMatchers("/", "/index").permitAll()
+                .antMatchers("/", "/index","/uploadQuestions","/classInfo","/import","/confirm","/swagger-ui.html#/**").permitAll()
                 .antMatchers("/admin/**").hasAnyRole("ADMIN")
                 .antMatchers("/trainer/**").hasAnyRole("TRAINER")
                 .antMatchers("/student/**").hasAnyRole("STUDENT")

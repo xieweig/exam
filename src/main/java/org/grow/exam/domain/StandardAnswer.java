@@ -27,4 +27,8 @@ public class StandardAnswer {
 
     private ClassInfo classInfo = new ClassInfo();
 
+    private Boolean submitted = false;
+
+
+
 }

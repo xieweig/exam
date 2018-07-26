@@ -6,8 +6,9 @@
     <title>table</title>
 </head>
 <body>
-    <div th:fragment="table">
+    <div th:fragment="question-table">
         <p>在线答题系统</p>
+
         <table class="table table-striped">
             <tr>
                 <th>试题序号</th>
@@ -21,18 +22,43 @@
             <tr class="table-row-cell" th:each="question : ${questions}">
                 <td th:text="${question.questionCode}">000</td>
                 <td th:text="${question.title}">试题题目加载错误</td>
-                <td th:text="${question.optionA}">试题选项加载错误</td>
+                <td> <input type="radio" th:name="${question.questionCode}" th:text="${question.optionA}" value="8"/></td>
+                <td> <input type="radio" th:name="${question.questionCode}" th:text="${question.optionB}" value="4"/></td>
+                <td> <input type="radio" th:name="${question.questionCode}" th:text="${question.optionC}" value="2"/></td>
+                <td> <input type="radio" th:name="${question.questionCode}" th:text="${question.optionD}" value="1"/></td>
+
+<!--                <td th:text="${question.optionA}">试题选项加载错误</td>
                 <td th:text="${question.optionB}">试题选项加载错误</td>
                 <td th:text="${question.optionC}">试题选项加载错误</td>
                 <td th:text="${question.optionD}">试题选项加载错误</td>
+
                 <td>
-                    <input type="radio" th:name="${question.questionCode}" value="A" >
-                    <input type="radio" th:name="${question.questionCode}" value="B" >
-                    <input type="radio" th:name="${question.questionCode}" value="C" >
-                    <input type="radio" th:name="${question.questionCode}" value="D" >
-                </td>
+                    <input type="radio" th:name="${question.questionCode}" value="A" />
+                    <input type="radio" th:name="${question.questionCode}" value="B" />
+                    <input type="radio" th:name="${question.questionCode}" value="C" />
+                    <input type="radio" th:name="${question.questionCode}" value="D" />
+                </td>-->
             </tr>
         </table>
+    </div>
+
+
+    <div th:fragment="standard-answer-table">
+        <table class="table table-striped">
+            <tr>
+                <th>试题序号</th>
+                <th>答案</th>
+            </tr>
+            <tr class="table-row-cell" th:each="answer : ${standardAnswer.correctAnswers}">
+                <td th:text="${answer.key}">000</td>
+                <td th:text="${answer.value}">试题题目加载错误</td>
+            </tr>
+        </table>
+        <script type="application/javascript" th:inline="javascript">
+
+
+
+        </script>
     </div>
 </body>
 </html>

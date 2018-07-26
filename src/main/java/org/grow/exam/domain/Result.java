@@ -6,6 +6,7 @@ package org.grow.exam.domain;
  * <p>
  * Description:
  */
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -42,11 +43,11 @@ public class Result {
 
     private String memberCode;
 
-    private String wrongs ;
 
     private Integer totalScore;
 
     @Transient
     private List<String> wrongsCode = new ArrayList<>();
-
+    @JsonIgnore
+    private String wrongs ;
 }

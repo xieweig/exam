@@ -136,8 +136,12 @@ public class SimplePoiQuestion implements PoiQuestion, InitializingBean {
         for (int i = 0; i < size ; i++) {
 
             Row row = sheet.getRow(startRow+i);
+            /**
+            **
+            * xieweig notes: 第0列是code编号第7列也就是H列是映射后的正确答案
+            */
             correctAnswers.put(this.getValue(row.getCell(0)),
-                    Integer.parseInt(this.getValue(row.getCell(6))));
+                    (int)row.getCell(7).getNumericCellValue());
         }
 
         return correctAnswers;

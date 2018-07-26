@@ -1,6 +1,7 @@
 package org.grow.exam.controller;
 
 import org.grow.exam.domain.Question;
+import org.grow.exam.domain.StandardAnswer;
 import org.grow.exam.infrastruture.JpaQuestion;
 import org.grow.exam.infrastruture.PoiQuestion;
 import org.springframework.data.domain.Sort;
@@ -30,16 +31,28 @@ public class MvcController {
     @Resource
     private PoiQuestion poiQuestion;
 
-    @RequestMapping(value = "/testing", method = RequestMethod.GET)
+    @Resource
+    private StandardAnswer standardAnswer;
+
+    @RequestMapping(value = "/student", method = RequestMethod.GET)
     public ModelAndView testing(){
 
+        if (standardAnswer.getSubmitted() == false) return new ModelAndView("/testing",new HashMap<String,Object>(){{
+            put("submitted",standardAnswer.getSubmitted());
+        }});
+
         List<Question> questions = jpaQuestion.findAll(Sort.by("questionCode"));
+
         return new ModelAndView("testing", new HashMap<String,Object>(){{
             put("questions", questions);
         }});
 
     }
 
+    /**
+    **
+    * xieweig notes: 以下是路由 不是请求，对于属性 分清楚什么是引用什么是字段，对于url分清楚什么是路由什么是请求
+    */
     @GetMapping("/")
     public String index() {
         return "index";
@@ -60,10 +73,6 @@ public class MvcController {
         return "import";
     }
 
-    @GetMapping("/student")
-    public String about() {
-        return "testing";
-    }
 
 
     @RequestMapping("/login")

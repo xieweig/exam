@@ -1,22 +1,24 @@
 package org.grow.exam.controller;
 
+
 import org.grow.exam.domain.*;
 import org.grow.exam.infrastruture.JpaQuestion;
 import org.grow.exam.infrastruture.JpaResult;
 import org.grow.exam.infrastruture.PoiQuestion;
 import org.grow.exam.infrastruture.RandomString;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -28,7 +30,7 @@ import java.util.stream.Collectors;
  * <p>
  * Description:
  */
-@RestController
+@Controller
 public class ExamHandler {
     @Resource
     private PoiQuestion poiQuestion;
@@ -41,13 +43,13 @@ public class ExamHandler {
     **
     * xieweig notes: 初始化装载试题
     */
+    @ResponseBody
     @GetMapping(value = "/configLoadQuestions")
     public List<Question> loadQuestions(@RequestParam int startRow , @RequestParam int size){
         /**
         **
         * xieweig notes: 如果未规定则读取第一行 读20道题
         */
-        if (startRow == 0 || size == 0) { startRow= 1;  size=20 ;}
 
         poiQuestion.selectAll(startRow, size).stream().map(x -> jpaQuestion.save(x)).forEach(System.out::println);
 
@@ -56,41 +58,59 @@ public class ExamHandler {
 
 
     }
-    @Transactional
-    @GetMapping(value = "/questions")
-    public void deleteQuestions(){
-        jpaQuestion.deleteAll();
-    }
 
     /**
     **
     * xieweig notes: 第一步教师通过提交excel文件 录入试题和正确答案
     */
-    @PostMapping(value = "/upLoadQuestions")
-    public List<Question> upLoad(@RequestParam MultipartFile file,
+    @PostMapping(value = "/uploadQuestions")
+    public  ModelAndView upLoad(@RequestParam MultipartFile file,
                                  @RequestParam(required = false) int startRow,
                                  @RequestParam(required = false) int size) throws IOException {
 
         if (startRow == 0) startRow =1;
         if (size == 0) size =20;
-
+        /**
+        **
+        * xieweig notes: 读取正确答案保存在单例bean中
+        */
+        standardAnswer.setSubmitted(false);
         standardAnswer.setCorrectAnswers(poiQuestion.readStandardAnswer(file.getInputStream(),startRow,size));
-        System.err.println(standardAnswer.getCorrectAnswers());
-        return poiQuestion.selectAll(file.getInputStream(),startRow, size)
+        /**
+        **
+        * xieweig notes: 读取考试试题的信息保存到数据库中并返回给前台跳转页面
+        */
+        List<Question> questions = this.cleanInsert(file.getInputStream(), startRow, size);
+
+
+         return new ModelAndView("confirm", new HashMap<String, Object>(){{
+             put("questions", questions);
+
+             put("standardAnswer", standardAnswer);
+             put("grades",ClassInfo.Grade.values());
+             put("subjects",ClassInfo.StudentSubject.values());
+         }});
+
+    }
+    @Transactional
+    protected List<Question> cleanInsert(InputStream in, Integer startRow, Integer size ){
+        jpaQuestion.deleteAll();
+        return  poiQuestion.selectAll(in,startRow, size)
                 .stream()
                 .map(jpaQuestion::save)
                 .collect(Collectors.toList());
-
 
     }
     /**
     **
     * xieweig notes: 第二步教师通过录入本次考试的相关信息，如考试科目和考试班级 第几次课堂测验 等信息
     */
-    @PostMapping(value = "/classInfo")
-    public Boolean saveClassInfo(@RequestBody ClassInfo classInfo){
+    @ResponseBody
+    @PostMapping(value = "/classInfoAndOpenTest")
+    public ClassInfo saveClassInfo(@RequestBody ClassInfo classInfo){
         standardAnswer.setClassInfo(classInfo);
-        return true;
+        standardAnswer.setSubmitted(true);
+        return standardAnswer.getClassInfo();
     }
     /**
     **
@@ -100,8 +120,10 @@ public class ExamHandler {
     private JpaResult jpaResult;
     @Resource
     private RandomString randomString;
-    @PutMapping(value = "/submit")
-    public String submit(@RequestBody AnswerSheet answerSheet){
+
+    @ResponseBody
+    @PutMapping(value = "/student/finish")
+    public Result submit(@RequestBody AnswerSheet answerSheet){
 
 
         Result result = new Result();
@@ -123,9 +145,11 @@ public class ExamHandler {
 
             }
 
-
         }
-
+        /**
+        **
+        * xieweig notes: 计算属性
+        */
         result.setWrongs(result.getWrongsCode().toString());
         result.setTotalScore(100 - result.getWrongsCode().size() *100 /correctAnswers.size());
         
@@ -137,18 +161,26 @@ public class ExamHandler {
         result.setMemberCode(answerSheet.getMemberCode());
         result.setResultCode(randomString.random5String("Result"));
         result.setResultType(Result.ResultType.allright);
-        jpaResult.save(result);
-        return result.getWrongs();
+
+        return jpaResult.save(result);
+
 
     }
+    @ResponseBody
     @GetMapping("/result/{memberCode}")
     public Result getOne(@PathVariable String memberCode){
         return jpaResult.findByMemberCode(memberCode);
     }
-
+/*    @ResponseBody
     @DeleteMapping("/results")
     @Transactional
     public void deleteResults(){
         jpaResult.deleteAll();
     }
+    @ResponseBody
+    @DeleteMapping("/questions")
+    @Transactional
+    public void deleteQuestions(){
+        jpaQuestion.deleteAll();
+    }*/
 }

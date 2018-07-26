@@ -8,8 +8,8 @@
 </head>
 <body>
 <div th:fragment="file-upload">
-<!--<form method="post" action="/upLoadQuestions" enctype="multipart/form-data">-->
-    <form id="questions-upload" enctype="multipart/form-data">
+<form method="post" th:action="@{/uploadQuestions}" enctype="multipart/form-data">
+
         <!-- COMPONENT START -->
     <div class="form-group col-lg-6" >
         <input type="button" id="browse" value="浏览待上传文件: " class="btn btn-success" onclick="$('#upload-file').click();"><br/>
@@ -19,61 +19,82 @@
 
     <div class="form-group col-lg-4">
         <label for="startRow" class="text-secondary text-info" >startRow: 从excel文件哪一行开始读取...</label>
-        <input type="number" class="form-control" id="startRow" placeholder=1 style="width:100px; height:38px"/>
+        <input type="number" name="startRow" class="form-control" id="startRow" placeholder=1 style="width:100px; height:38px"/>
         <label for="size"  class="text-secondary text-info">size: 考试试题数是...</label>
-        <input type="number" class="form-control" id="size" placeholder=20 style="width:100px; height:38px"/>
-    </div>
+        <input type="number" name="size" class="form-control" id="size" placeholder=20 style="width:100px; height:38px"/>
+    </div>@
         <!-- COMPONENT END -->
     <div class="form-group col-lg-8">
-          <button type="submit" id="submit-questions" onclick="sub()" class="btn btn-primary pull-right">Submit</button>
+          <button type="submit" id="submit-questions" class="btn btn-primary pull-right">Submit</button>
           <button type="reset" class="btn btn-danger">Reset</button>
     </div>
     </form>
 
-    <script type="text/javascript">
-        var isUploaded = false;
 
-        var sub =  function(){
-            if(isUploaded){
-                alert("文件正在上传中，请稍候");
-                return false;
-            }
 
-            var filePath = $("#upload-file").val();
-            if (filePath == "") {
-                alert("please upload excel file",2);
-                return false;
-            }
+</div>
 
-            var formData = new FormData();
+<div th:fragment="file-confirm">
+    <div class="form-group">
+        <select name="grade" id="grade" class="form-control input-lg"
+               required="true" >
+            <option th:each="grade : ${grades}" th:text="${grade}" th:value="${grade}"></option>
+        </select>
+    </div>
+    <div class="form-group">
+        <select name="subject" id="subject" class="form-control input-lg"
+                required="true">
+        <option th:each="subject : ${subjects}" th:text="${subject}"  th:value="${subject}"></option>
+        </select>
+    </div>
+    <div class="form-group">
+        <input type="number" name="times" id="times" class="form-control input-lg"
+               placeholder="请输入考试场次" required="true"/>
+    </div>
 
-            formData.append('file', $("#upload-file").files[0]);
-            formData.append('startRow',$("#startRow").val());
-            formData.append('size',$("#startRow").val());
+    <button id="openTest" type="button" onclick="openTest()" > 提交考试信息并开放考试<p id="isOpen">未开放</p> </button>
+    <button id="exportResults" type="button" disabled="disabled" onclick="exportResults()" > 结束考试并生成导出考试结果 </button>
+    <script type="application/javascript" th:inline="javascript">
+        var openTest = function () {
+            var grade = $("#grade").val();
+            var subject = $("#subject").val();
+            var times = $("#times").val();
+            var classInfo = {
+                "grade": grade,
+                "subject": subject,
+                "times": times
+            };
+            var url = "/classInfoAndOpenTest";
+
             $.ajax({
-                url: '/upLoadQuestions',
-                type: 'POST',
-                cache: false,
-                data: formData,
-                processData: false,
-                contentType: false,
-              /*  dataType:"json",*/
+                type: 'post',
+                url: url,
+                contentType: 'application/json',
+
+                data: JSON.stringify(classInfo),
+
+                dataType: 'json',
+
                 beforeSend: function(){
-                    isUploaded = true;
+                //开始请求之前
+                console.log(classInfo);
+                console.log(JSON.stringify(classInfo));
 
-                    console.log(formData['size']);
-                    console.log(formData['startRow']);
-                    console.log(formData['file']);
-                },
-                success : function(data) {
+            },
+                success: function (data) {
+                    console.log("back",data);
+                    $("#isOpen").text("已开放");
+                    $("#openTest").attr("disabled",true);
+                    $("#exportResults").attr("disabled",false);
 
-                    isUploaded = false;
-                    console.log(data[0]);
+
                 }
             });
-        };
-    </script>
 
+        }
+
+
+    </script>
 </div>
 </body>
 </html>
