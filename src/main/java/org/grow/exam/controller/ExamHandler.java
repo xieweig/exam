@@ -179,7 +179,7 @@ public class ExamHandler {
         result.setMessage(answerSheet.getName()+ "留言："+answerSheet.getRemarks());
 
         result.setResultCode(randomString.random5String("Result"));
-        result.setResultType(Result.ResultType.allright);
+
         return jpaResult.save(result);
 
 
