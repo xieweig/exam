@@ -17,4 +17,6 @@ public interface JpaResult extends JpaRepository<Result, Long>,JpaSpecificationE
     Result findByMemberCode(String memberCode);
 
     Result findByResultCode(String resultCode);
+
+    void deleteByMemberCode(String memberCode);
 }

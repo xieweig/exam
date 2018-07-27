@@ -14,7 +14,7 @@
     <div class="form-group col-lg-6" >
         <input type="button" id="browse" value="浏览待上传文件: " class="btn btn-success" onclick="$('#upload-file').click();"><br/>
         <input id='location' class="form-control"  placeholder='Choose an excel file...' disabled>
-        <input type="file" id='upload-file' name="file" accept="application/vnd.ms-excel" onchange="$('#location').val($('#upload-file').val());" style="display: none">
+        <input type="file" id='upload-file' name="file" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onchange="$('#location').val($('#upload-file').val());" style="display: none">
     </div><br/>
 
     <div class="form-group col-lg-4">
@@ -52,8 +52,8 @@
                placeholder="请输入考试场次" required="true"/>
     </div>
 
-    <button id="openTest" type="button" onclick="openTest()" > 提交考试信息并开放考试<p id="isOpen">未开放</p> </button>
-    <button id="exportResults" type="button" disabled="disabled" onclick="exportResults()" > 结束考试并生成导出考试结果 </button>
+    <button id="openTest" type="button" onclick="openTest()" class="btn btn-primary pull-right" > 提交考试信息并开放考试<p id="isOpen">未开放</p> </button>
+
     <script type="application/javascript" th:inline="javascript">
         var openTest = function () {
             var grade = $("#grade").val();
@@ -80,12 +80,12 @@
                 console.log(classInfo);
                 console.log(JSON.stringify(classInfo));
 
-            },
+                },
                 success: function (data) {
                     console.log("back",data);
                     $("#isOpen").text("已开放");
                     $("#openTest").attr("disabled",true);
-                    $("#exportResults").attr("disabled",false);
+                    //$("#exportResults").attr("disabled",false);
 
 
                 }
@@ -95,6 +95,18 @@
 
 
     </script>
+
+
+    <div th:fragment="file-export">
+        <div class="form-group">
+        <a id="exportResults" th:href="@{/csvResults}" class="btn btn-primary pull-right" > 结束考试并生成导出考试结果 </a>
+
+        </div>
+        <script type="application/javascript" th:inline="javascript">
+
+
+        </script>
+    </div>
 </div>
 </body>
 </html>

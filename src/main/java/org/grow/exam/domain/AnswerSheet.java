@@ -15,12 +15,6 @@ import java.util.*;
 public class AnswerSheet {
 
 
-
-    private AnswerSheetType answerSheetType = AnswerSheetType.studentAnswer;
-
-    private enum AnswerSheetType {
-        standardAnswer, studentAnswer
-    }
     /**
     **
     * xieweig notes: 提交的答案应该是questionCode=8，4，2，1等键值对，共同构成一个动态map

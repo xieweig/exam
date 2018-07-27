@@ -13,7 +13,7 @@
     </div>
     <div th:replace="fragments/inout :: file-confirm"></div>
     <div>如下是刚才导入的试题表，学生访问看到的将会是同样的表，在您没有点击 开放考试 之前，您可以看到试题，学生依旧看不到</div>
-    <div th:replace="fragments/table :: question-table"></div>
+    <div th:replace="fragments/table :: question-table(forStudent= false)"></div>
     <div>这里是正确答案，ABCD 分别对应 二进制1000 0100 0010 0001 也就是 8421 </div>
     <div>这样映射的好处是，可以处理多个正确答案的情况，譬如 AC都对，答案是8+2=10 在上传的试题excel H列中可以直接修改成对应数字 </div>
     <div th:replace="fragments/table :: standard-answer-table"></div>

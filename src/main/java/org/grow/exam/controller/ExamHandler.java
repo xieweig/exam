@@ -6,6 +6,7 @@ import org.grow.exam.infrastruture.JpaQuestion;
 import org.grow.exam.infrastruture.JpaResult;
 import org.grow.exam.infrastruture.PoiQuestion;
 import org.grow.exam.infrastruture.RandomString;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,6 +112,7 @@ public class ExamHandler {
     public ClassInfo saveClassInfo(@RequestBody ClassInfo classInfo){
         standardAnswer.setClassInfo(classInfo);
         standardAnswer.setSubmitted(true);
+        standardAnswer.setExamStartTime(LocalDateTime.now());
         return standardAnswer.getClassInfo();
     }
     /**
@@ -120,13 +123,27 @@ public class ExamHandler {
     private JpaResult jpaResult;
     @Resource
     private RandomString randomString;
+    @Resource
+    private ApplicationContext applicationContext;
 
     @ResponseBody
     @PutMapping(value = "/student/finish")
     public Result submit(@RequestBody AnswerSheet answerSheet){
+        /**
+        **
+        * xieweig notes: 加一个小拦截器，防止同一个学生提交两次
+        */
+        if (jpaResult.findByMemberCode(answerSheet.getMemberCode()) != null) return new Result(){{
+            setMessage("该学号已经提交过一次，不允许再次提交，如有问题，请联系老师解决");
+        }};
+        /**
+        **
+        * xieweig notes: 让spring容器帮助new实例对象的好处是可以帮你装配上@Resource工具类，但如果用的不多的话可以建一个静态类更好。
+         *
+        */
 
 
-        Result result = new Result();
+        Result result = applicationContext.getBean(Result.class);
 
         /**
         **
@@ -148,39 +165,29 @@ public class ExamHandler {
         }
         /**
         **
-        * xieweig notes: 计算属性
+        * xieweig notes: 计算属性 正常应该写，利用钩子函数@prepersist 见result实体类里
         */
-        result.setWrongs(result.getWrongsCode().toString());
-        result.setTotalScore(100 - result.getWrongsCode().size() *100 /correctAnswers.size());
-        
+        //result.setWrongs(result.getWrongsCode().toString());
+        //result.setTotalScore(100 - result.getWrongsCode().size() *100 /correctAnswers.size());
+        //result.setClassInfo(standardAnswer.getClassInfo());
+
         /**
         **
         * xieweig notes: 基本信息设置
         */
-        result.setClassInfo(standardAnswer.getClassInfo());
         result.setMemberCode(answerSheet.getMemberCode());
+        result.setMessage(answerSheet.getName()+ "留言："+answerSheet.getRemarks());
+
         result.setResultCode(randomString.random5String("Result"));
         result.setResultType(Result.ResultType.allright);
-
         return jpaResult.save(result);
 
 
     }
-    @ResponseBody
-    @GetMapping("/result/{memberCode}")
-    public Result getOne(@PathVariable String memberCode){
-        return jpaResult.findByMemberCode(memberCode);
+    @GetMapping("/csvResults")
+    public void exportAsCsv(){
+        jpaResult.findAll(Sort.by(Sort.Direction.ASC,"memberCode"));
     }
-/*    @ResponseBody
-    @DeleteMapping("/results")
-    @Transactional
-    public void deleteResults(){
-        jpaResult.deleteAll();
-    }
-    @ResponseBody
-    @DeleteMapping("/questions")
-    @Transactional
-    public void deleteQuestions(){
-        jpaQuestion.deleteAll();
-    }*/
+
+
 }

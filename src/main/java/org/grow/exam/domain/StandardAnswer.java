@@ -5,6 +5,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +29,8 @@ public class StandardAnswer {
     private ClassInfo classInfo = new ClassInfo();
 
     private Boolean submitted = false;
+
+    private LocalDateTime examStartTime;
 
 
 
