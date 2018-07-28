@@ -53,11 +53,11 @@ public class ExamHandler {
         if (size == 0) size =20;
         /**
         **
-        * xieweig notes: 初始化，上传一次excel，代表要进行一场考试，进入考试准备阶段啊，此时暂时不允许学生访问试题库，此时允许学生提交考试答案
+        * xieweig notes: 初始化，上传一次excel，代表要进行一场考试，进入考试准备阶段啊，此时暂时不允许学生访问试题库，此时同样不必允许学生提交考试答案
          * 读取正确答案保存在单例bean中
         */
         standardAnswer.setSubmitted(false);
-        standardAnswer.setExamClosed(false);
+        standardAnswer.setExamClosed(true);
         standardAnswer.setCorrectAnswers(poiQuestion.readStandardAnswer(file.getInputStream(),startRow,size));
         /**
         **
@@ -94,7 +94,7 @@ public class ExamHandler {
 
         /**
         **
-        * xieweig notes: 此时进入考试阶段，考生可以看到考题，当然页可以访问
+        * xieweig notes: 此时进入考试阶段，考生可以看到考题，当然页可以访问,提交按钮有必要出来
         */
         if (standardAnswer.getSubmitted()) throw new RuntimeException("未知黑客破坏了游戏规则");
         standardAnswer.setSubmitted(true);

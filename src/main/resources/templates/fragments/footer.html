@@ -9,7 +9,11 @@
     <div th:if="${#httpServletRequest.remoteUser}" class="container">
         <footer>
             <!-- this is footer -->
-                <a class="btn btn-sm btn-secondary btn-block " th:href="@{/logout}">爱你哟 logout</a>
+            <br/>
+            <br/>
+            <span class="form-group col-lg-8">
+                <a class="btn btn-sm btn-secondary btn-outline-danger pull-left" th:href="@{/logout}">log out</a>
+                <a class="btn btn-sm btn-secondary btn-outline-primary pull-right" th:href="@{/index}">Home</a>
             </span>
         </footer>
     </div>

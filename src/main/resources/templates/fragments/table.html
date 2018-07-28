@@ -6,26 +6,58 @@
 </head>
 <body>
     <div th:fragment="question-table(forStudent)">
-        <p>在线答题系统</p>
+        <p>在线答题系统 </p>
 
-        <table id="tableInfo" class="table table-striped">
+        <table id="tableInfo" class="table table-striped" width="100%" >
+            <thead class="thead-inverse">
             <tr>
-                <th>试题序号</th>
-                <th>试题题目</th>
+                <th>题目</th>
                 <th>选项A</th>
                 <th>选项B</th>
                 <th>选项C</th>
                 <th>选项D</th>
             </tr>
-            <tr class="table-row-cell" th:each="question : ${questions}">
-                <td th:text="${question.questionCode}">000</td>
-                <td th:text="${question.title}">试题题目加载错误</td>
-                <td> <input type="radio" th:name="${question.questionCode}" th:text="${question.optionA}" value="8"/></td>
-                <td> <input type="radio" th:name="${question.questionCode}" th:text="${question.optionB}" value="4"/></td>
+            </thead>
+            <tbody th:each="question : ${questions}">
+            <tr th:height="80" class="table-row-cell" >
+                <td  th:text="${question.questionCode}">000</td>
+                <td width="1000" colspan="4" >
+                    <span class="btn btn-dark content" th:text="${question.title}">
+
+                    </span>
+                </td>
+                <td></td>
+            </tr>
+            <tr th:height="40" class="table-row-cell" >
+                <td></td>
+                <td  width="250">
+                    <label  class="btn btn-outline-info content" >
+                        <input type="radio" th:name="${question.questionCode}"  th:text="'A: '+${question.optionA}" value="8" />
+                    </label>
+                </td>
+                <td   width="250">
+                    <label class="btn btn-outline-success content">
+                        <input type="radio" th:name="${question.questionCode}" th:text="'B: '+${question.optionB}" value="4" />
+
+                    </label>
+                </td >
+                <td   width="250">
+                    <label class="btn btn-outline-info content" >
+                        <input type="radio" th:name="${question.questionCode}" th:text="'C: '+${question.optionC}" value="2" />
+                    </label>
+                </td>
+                <td  width="250">
+                    <label class="btn btn-outline-success content">
+                        <input type="radio" th:name="${question.questionCode}" th:text="'D: '+${question.optionD}" value="1" />
+                    </label>
+                </td>
+                <td></td>
+          <!--      <td> <input type="radio" th:name="${question.questionCode}" th:text="${question.optionB}" value="4"/></td>
                 <td> <input type="radio" th:name="${question.questionCode}" th:text="${question.optionC}" value="2"/></td>
                 <td> <input type="radio" th:name="${question.questionCode}" th:text="${question.optionD}" value="1"/></td>
-
+-->
             </tr>
+            </tbody>
         </table>
         <div th:if="${forStudent}" class="form-group col-lg-6" >
             <label for="memberCode" class="text-secondary text-info" >学号： </label>
@@ -36,7 +68,7 @@
 
             <label for="remarks"  class="text-secondary text-info">留言： </label>
             <input type="text" name="remarks" class="form-control" id="remarks" placeholder=“可以随便写点，可以不写” style="width:200px; height:38px"/>
-        <button  type="button" id="student-finish" class="btn btn-primary pull-right" onclick="finish()">结束考试，提交答案</button>
+        <button th:if="${examClosed == false}" type="button" id="student-finish" class="btn btn-primary pull-right" onclick="finish()">结束考试，提交答案</button>
         <!--th:if="${examClosed}"-->
         </div>
         <div id = "small-console" class="form-group col-lg-6" >"小型控制台"</div>
@@ -48,10 +80,11 @@
                 var answers = {};
 
                 var tableObj = document.getElementById("tableInfo");
+                // 注意观察表结构
 
-                for (var i = 1; i < tableObj.rows.length; i++) {
+                for (var i = 2; i < tableObj.rows.length; i+=2) {
 
-                    var questionCode = tableObj.rows[i].cells[0].innerHTML;
+                    var questionCode = tableObj.rows[i-1].cells[0].innerHTML;
                     var answer;
                     var radios = document.getElementsByName(questionCode);
 
@@ -104,6 +137,14 @@
                 });
             }
         </script>
+        <style type="text/css">
+            .content {
+                white-space: pre-line;
+                word-wrap:break-word;
+                word-break:break-all
+            }
+
+        </style>
     </div>
 
 

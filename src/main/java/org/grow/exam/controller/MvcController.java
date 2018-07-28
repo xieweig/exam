@@ -34,7 +34,7 @@ public class MvcController {
     @Resource
     private StandardAnswer standardAnswer;
 
-    @RequestMapping(value = "/student", method = RequestMethod.GET)
+    @RequestMapping(value = "/student/start", method = RequestMethod.GET)
     public ModelAndView testing(){
 
         if (standardAnswer.getSubmitted() == false) return new ModelAndView("testing",new HashMap<String,Object>(){{

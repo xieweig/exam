@@ -6,6 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.1.0/css/bootstrap.css}" />
     <script type="text/javascript" th:src="@{/webjars/jquery/3.0.0/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.1.0/js/bootstrap.js}"></script>
 </head>
 <body>
 <div th:replace="fragments/header :: header"></div>
@@ -14,7 +15,7 @@
         <h1>Spring Boot + Thymeleaf + Spring Security</h1>
         <h2>1. 打开 <a th:href="@{/admin}">管理员页面</a></h2>
         <h2>2. 打开 <a th:href="@{/trainer}">教师页面</a></h2>
-        <h2>3. 打开 <a th:href="@{/student}">学生页面</a></h2>
+        <h2>3. 打开 <a th:href="@{/student/start}">学生页面</a></h2>
     </div>
 </div>
 

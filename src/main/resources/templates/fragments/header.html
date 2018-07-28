@@ -6,9 +6,54 @@
 <body>
 <div th:fragment="header">
     <!-- this is header -->
-        <div class="container">
-            <a class="navbar-expand btn btn-primary" th:href="@{/index}">class Test</a>
+
+    <nav class="navbar navbar-fix-top navbar-dark bg-primary nav-left">
+       <button class="navbar-toggler hidden-sm-up pull-right" type="button" data-toggle="collapse" data-target="#collapsingNavbar">
+            ☰
+        </button>
+      <!--  <a class="navbar-brand" href="#">Navbar</a>-->
+        <div class="collapse navbar-toggleable-xs"  id="collapsingNavbar">
+            <ul class="nav navbar-nav" >
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/index}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin}">Manager</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/trainer}">Trainer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/student/start}">Student</a>
+                </li>
+            </ul>
         </div>
+    </nav>
+    <div class="col-lg-6">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/index}" role="tab" data-toggle="tab pill">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin}" role="tab" data-toggle="tab pill">管理员</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/trainer}" role="tab" data-toggle="tab pill">教师界面</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/student/start}" role="tab" data-toggle="tab pill">学生界面</a>
+            </li>
+        </ul>
+
+    </div>
+    <style>
+        .nav-left{
+            display: block;
+        }
+    </style>
+
+
 </div>
 </body>
 </html>
