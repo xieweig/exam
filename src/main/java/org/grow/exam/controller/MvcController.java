@@ -37,7 +37,7 @@ public class MvcController {
     @RequestMapping(value = "/student", method = RequestMethod.GET)
     public ModelAndView testing(){
 
-        if (standardAnswer.getSubmitted() == false) return new ModelAndView("/testing",new HashMap<String,Object>(){{
+        if (standardAnswer.getSubmitted() == false) return new ModelAndView("testing",new HashMap<String,Object>(){{
             put("submitted",standardAnswer.getSubmitted());
         }});
 
@@ -45,6 +45,7 @@ public class MvcController {
 
         return new ModelAndView("testing", new HashMap<String,Object>(){{
             put("questions", questions);
+            put("examClosed",standardAnswer.getExamClosed());
         }});
 
     }

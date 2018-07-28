@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.io.IOException;
 
 import java.io.InputStream;
@@ -23,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -41,31 +39,12 @@ public class ExamHandler {
 
     @Resource
     private StandardAnswer standardAnswer;
-    /**
-    **
-    * xieweig notes: 初始化装载试题
-    */
-    @ResponseBody
-    @GetMapping(value = "/configLoadQuestions")
-    public List<Question> loadQuestions(@RequestParam int startRow , @RequestParam int size){
-        /**
-        **
-        * xieweig notes: 如果未规定则读取第一行 读20道题
-        */
-
-        poiQuestion.selectAll(startRow, size).stream().map(x -> jpaQuestion.save(x)).forEach(System.out::println);
-
-
-        return jpaQuestion.findAll(Sort.by("questionCode"));
-
-
-    }
 
     /**
     **
     * xieweig notes: 第一步教师通过提交excel文件 录入试题和正确答案
     */
-    @PostMapping(value = "/uploadQuestions")
+    @PostMapping(value = "/trainer/uploadQuestions")
     public  ModelAndView upLoad(@RequestParam MultipartFile file,
                                  @RequestParam(required = false) int startRow,
                                  @RequestParam(required = false) int size) throws IOException {
@@ -74,9 +53,11 @@ public class ExamHandler {
         if (size == 0) size =20;
         /**
         **
-        * xieweig notes: 读取正确答案保存在单例bean中
+        * xieweig notes: 初始化，上传一次excel，代表要进行一场考试，进入考试准备阶段啊，此时暂时不允许学生访问试题库，此时允许学生提交考试答案
+         * 读取正确答案保存在单例bean中
         */
         standardAnswer.setSubmitted(false);
+        standardAnswer.setExamClosed(false);
         standardAnswer.setCorrectAnswers(poiQuestion.readStandardAnswer(file.getInputStream(),startRow,size));
         /**
         **
@@ -87,7 +68,6 @@ public class ExamHandler {
 
          return new ModelAndView("confirm", new HashMap<String, Object>(){{
              put("questions", questions);
-
              put("standardAnswer", standardAnswer);
              put("grades",ClassInfo.Grade.values());
              put("subjects",ClassInfo.StudentSubject.values());
@@ -108,10 +88,18 @@ public class ExamHandler {
     * xieweig notes: 第二步教师通过录入本次考试的相关信息，如考试科目和考试班级 第几次课堂测验 等信息
     */
     @ResponseBody
-    @PostMapping(value = "/classInfoAndOpenTest")
+    @PostMapping(value = "/trainer/classInfoAndOpenTest")
     public ClassInfo saveClassInfo(@RequestBody ClassInfo classInfo){
         standardAnswer.setClassInfo(classInfo);
+
+        /**
+        **
+        * xieweig notes: 此时进入考试阶段，考生可以看到考题，当然页可以访问
+        */
+        if (standardAnswer.getSubmitted()) throw new RuntimeException("未知黑客破坏了游戏规则");
         standardAnswer.setSubmitted(true);
+        standardAnswer.setExamClosed(false);
+
         standardAnswer.setExamStartTime(LocalDateTime.now());
         return standardAnswer.getClassInfo();
     }
@@ -129,6 +117,10 @@ public class ExamHandler {
     @ResponseBody
     @PutMapping(value = "/student/finish")
     public Result submit(@RequestBody AnswerSheet answerSheet){
+
+        if (standardAnswer.getExamClosed()) return new Result(){{
+           setMessage("考试已经关闭，不允许再提交答案");
+        }};
         /**
         **
         * xieweig notes: 加一个小拦截器，防止同一个学生提交两次
@@ -184,7 +176,24 @@ public class ExamHandler {
 
 
     }
-    @GetMapping("/csvResults")
+    /**
+    **
+    * xieweig notes: 关闭考试按钮
+     *
+    */
+    @GetMapping("/trainer/closeExam")
+    public void closeExam(){
+        standardAnswer.setExamClosed(true);
+    }
+    /**
+    **
+    * xieweig notes: 临时开启考试按钮，为了应对紧急情况
+    */
+    @GetMapping("/trainer/tempOpenExam")
+    public void openExam(){
+        standardAnswer.setExamClosed(false);
+    }
+    @GetMapping("/trainer/csvResults")
     public void exportAsCsv(){
         jpaResult.findAll(Sort.by(Sort.Direction.ASC,"memberCode"));
     }

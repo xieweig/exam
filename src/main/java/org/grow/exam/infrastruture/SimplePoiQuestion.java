@@ -30,8 +30,8 @@ import java.util.Map;
 public class SimplePoiQuestion implements PoiQuestion, InitializingBean {
 
 
-    @Value("${poi.readfrom:/static/test_content.xlsx}")
-    private String url;
+/*    @Value("${poi.readfrom:/static/test_content.xlsx}")
+    private String url;*/
     @Value("${poi.sheetNumber:0}")
     private Integer sheetNumber;
 
@@ -46,10 +46,10 @@ public class SimplePoiQuestion implements PoiQuestion, InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
 
-        Assert.notNull(url,"please tell me which file to read by poi");
-        Assert.notNull(workbook, "load failed about workbook");
+       // Assert.notNull(url,"please tell me which file to read by poi");
+        //Assert.notNull(workbook, "load failed about workbook");
     }
-
+/*
     @PostConstruct
     public void init(){
         try {
@@ -59,7 +59,7 @@ public class SimplePoiQuestion implements PoiQuestion, InitializingBean {
         } catch (InvalidFormatException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     @Override
     public List<Question> selectAll(InputStream inputStream, int startRow, int size) {
@@ -71,8 +71,7 @@ public class SimplePoiQuestion implements PoiQuestion, InitializingBean {
         return this.selectAll(startRow, size);
     }
 
-    @Override
-    public List<Question> selectAll(int startRow, int size) {
+    private List<Question> selectAll(int startRow, int size) {
 
         List<Question> questions = new LinkedList<Question>();
 

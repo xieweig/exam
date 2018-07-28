@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.1.0/css/bootstrap.css" />
 </head>
 <body>
 <div th:fragment="file-upload">
-<form method="post" th:action="@{/uploadQuestions}" enctype="multipart/form-data">
+<form method="post" th:action="@{/trainer/uploadQuestions}" enctype="multipart/form-data">
 
         <!-- COMPONENT START -->
     <div class="form-group col-lg-6" >
@@ -64,7 +62,7 @@
                 "subject": subject,
                 "times": times
             };
-            var url = "/classInfoAndOpenTest";
+            var url = "/trainer/classInfoAndOpenTest";
 
             $.ajax({
                 type: 'post',
@@ -100,7 +98,7 @@
 
 <div th:fragment="file-export">
     <div class="form-group">
-        <a id="exportResults" th:href="@{/csvResults}" class="btn btn-primary pull-right" > 结束考试并生成导出考试结果 </a>
+        <a id="exportResults" th:href="@{/trainer/csvResults}" class="btn btn-primary pull-right" > 结束考试并生成导出考试结果 </a>
 
     </div>
     <script type="application/javascript" th:inline="javascript">

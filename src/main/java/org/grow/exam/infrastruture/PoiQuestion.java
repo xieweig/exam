@@ -15,7 +15,7 @@ import java.util.Map;
  * Description:
  */
 public interface PoiQuestion extends Closeable {
-    List<Question> selectAll( int startRow, int size);
+   
 
     List<Question> selectAll(InputStream inputStream , int startRow , int size);
 
