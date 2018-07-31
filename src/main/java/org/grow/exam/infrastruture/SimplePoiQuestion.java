@@ -10,15 +10,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import sun.reflect.generics.tree.Tree;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Author : xieweig
@@ -38,16 +37,15 @@ public class SimplePoiQuestion implements PoiQuestion, InitializingBean {
 
     private Workbook workbook = null;
 
-    @Override
-    public void close() throws IOException {
-        this.workbook.close();
+    public void setWorkbook(Workbook workbook) {
+        this.workbook = workbook;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
 
        // Assert.notNull(url,"please tell me which file to read by poi");
-        //Assert.notNull(workbook, "load failed about workbook");
+        //Assert.notNull(workbook, "please set workBook just like set SessionFactory before use hibernate CRUD load failed about workbook");
     }
 /*
     @PostConstruct
@@ -62,16 +60,7 @@ public class SimplePoiQuestion implements PoiQuestion, InitializingBean {
     }*/
 
     @Override
-    public List<Question> selectAll(InputStream inputStream, int startRow, int size) {
-        try {
-            workbook = WorkbookFactory.create(inputStream);
-        } catch (IOException | InvalidFormatException e) {
-            e.printStackTrace();
-        }
-        return this.selectAll(startRow, size);
-    }
-
-    private List<Question> selectAll(int startRow, int size) {
+    public List<Question> selectAll(int startRow, int size) {
 
         List<Question> questions = new LinkedList<Question>();
 
@@ -87,9 +76,13 @@ public class SimplePoiQuestion implements PoiQuestion, InitializingBean {
         return questions;
     }
 
-    public Question map(Row row){
+    private Question map(Row row){
         Question question = new Question();
-        question.setQuestionCode(this.getValue(row.getCell(0)));
+        /**
+        **
+        * xieweig notes: 对于序号做一个四位的补零字符串化，方便排序，直接用数字应该也可以。
+        */
+        question.setQuestionCode(String.format("%04d",(int)row.getCell(0).getNumericCellValue()));
         question.setTitle(this.getValue(row.getCell(1)));
         question.setOptionA(this.getValue(row.getCell(2)));
         question.setOptionB(this.getValue(row.getCell(3)));
@@ -97,7 +90,10 @@ public class SimplePoiQuestion implements PoiQuestion, InitializingBean {
         question.setOptionD(this.getValue(row.getCell(5)));
         return question;
     }
-
+    /**
+    **
+    * xieweig notes: 将所有的值都读成字符串格式，copy来的
+    */
     public String getValue(Cell cell) {
         if(cell==null){
             return "---";
@@ -121,14 +117,15 @@ public class SimplePoiQuestion implements PoiQuestion, InitializingBean {
         }
     }
 
+
     @Override
-    public Map<String, Integer> readStandardAnswer(InputStream inputStream,int startRow, int size) {
-        try {
-            workbook = WorkbookFactory.create(inputStream);
-        } catch (IOException | InvalidFormatException e) {
-            e.printStackTrace();
-        }
-        Map<String, Integer> correctAnswers = new HashMap<>();
+    public Map<String, Integer> readStandardAnswer(int startRow, int size) {
+        /**
+        **
+        * xieweig notes: treemap自带排序功能 也可以传入参数传一个lambda表达式，都是根据key值的
+        */
+        //Map<String, Integer> correctAnswers = new TreeMap<>();
+        Map<String, Integer> correctAnswers = new TreeMap<>((str1, str2)-> str2.compareTo(str1));
 
         Sheet sheet = workbook.getSheetAt(sheetNumber);
 
@@ -139,9 +136,10 @@ public class SimplePoiQuestion implements PoiQuestion, InitializingBean {
             **
             * xieweig notes: 第0列是code编号第7列也就是H列是映射后的正确答案
             */
-            correctAnswers.put(this.getValue(row.getCell(0)),
+            correctAnswers.put(String.format("%04d",(int)row.getCell(0).getNumericCellValue()),
                     (int)row.getCell(7).getNumericCellValue());
         }
+
 
         return correctAnswers;
     }

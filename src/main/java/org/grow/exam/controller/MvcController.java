@@ -41,10 +41,10 @@ public class MvcController {
             put("submitted",standardAnswer.getSubmitted());
         }});
 
-        List<Question> questions = jpaQuestion.findAll(Sort.by("questionCode"));
+        //List<Question> questions = jpaQuestion.findAll(Sort.by("questionCode"));
 
         return new ModelAndView("testing", new HashMap<String,Object>(){{
-            put("questions", questions);
+            put("questions", jpaQuestion.findAll(Sort.by("questionCode")));
             put("examClosed",standardAnswer.getExamClosed());
         }});
 

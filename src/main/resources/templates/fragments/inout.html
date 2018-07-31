@@ -33,6 +33,7 @@
 </div>
 
 <div th:fragment="file-confirm">
+    <div>请依次填写考试基本信息 考试班级 考试科目 考试场次，之后点击按钮开始考试，学生将会看到考试题目</div>
     <div class="form-group">
         <select name="grade" id="grade" class="form-control input-lg"
                required="true" >
@@ -97,13 +98,51 @@
 </div>
 
 <div th:fragment="file-export">
+    <div  class="form-group">
+        <button id="lockButton" onclick="closeExam()"  class="btn btn-secondary  pull-right" >关闭考试停止学生交卷</button>
+    </div>
     <div class="form-group">
-        <a id="exportResults" th:href="@{/trainer/csvResults}" class="btn btn-primary pull-right" > 结束考试并生成导出考试结果 </a>
+        <a id="exportResults" th:href="@{/trainer/csvResults}" target="_blank" class="btn btn-info pull-right" onclick="enableDelete()" > 结束考试并生成导出考试结果 </a>
 
     </div>
+    <div  class="form-group">
+        <button id="deleteResults" onclick="deleteResults()"  class="btn btn-warning  pull-right" disabled="disabled" >清空考试成绩数据库表 方便下一场次考试</button>
+    </div>
     <script type="application/javascript" th:inline="javascript">
+        var lockUrl ="/trainer/closeExam";
 
+        var closeExam = function () {
+            $.ajax({
+                type: 'get',
+                url: lockUrl,
+                contentType: 'application/json',
+                dataType: 'json',
 
+                success: function (data) {
+                    lockUrl= data ? "/trainer/tempOpenExam" : "/trainer/closeExam";
+
+                    console.log(lockUrl);
+
+                    $("#lockButton").text(data?"暂时允许学生交卷":"关闭考试停止学生交卷");
+                }
+            })
+        }
+        var enableDelete = function () {
+            $('#deleteResults').attr("disabled",false);
+        }
+        var deleteResults = function () {
+
+            $.ajax({
+                type: 'delete',
+                url: "/basic/results",
+                contentType: 'application/json',
+                dataType: 'json',
+
+                success: function () {
+                        alert("已经清空考试成绩信息。唯一作用是方便下一场考试")
+                }
+            })
+        }
     </script>
 </div>
 </body>

@@ -1,5 +1,6 @@
 package org.grow.exam.infrastruture;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.grow.exam.domain.Question;
 import org.grow.exam.domain.StandardAnswer;
 
@@ -14,10 +15,17 @@ import java.util.Map;
  * <p>
  * Description:
  */
-public interface PoiQuestion extends Closeable {
-   
+public interface PoiQuestion{
 
-    List<Question> selectAll(InputStream inputStream , int startRow , int size);
+    /**
+    **
+    * xieweig notes: poi为单例， workbook 非单例 所以每次使用一般方法前要set
+    */
 
-    Map<String,Integer> readStandardAnswer(InputStream inputStream, int startRow , int size);
+    void setWorkbook(Workbook workbook);
+
+    List<Question> selectAll(int startRow , int size);
+
+    Map<String,Integer> readStandardAnswer(int startRow , int size);
+
 }

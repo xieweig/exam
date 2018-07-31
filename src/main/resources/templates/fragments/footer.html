@@ -7,7 +7,7 @@
 <body>
 <div th:fragment="footer">
     <div th:if="${#httpServletRequest.remoteUser}" class="container">
-        <footer>
+
             <!-- this is footer -->
             <br/>
             <br/>
@@ -15,7 +15,7 @@
                 <a class="btn btn-sm btn-secondary btn-outline-danger pull-left" th:href="@{/logout}">log out</a>
                 <a class="btn btn-sm btn-secondary btn-outline-primary pull-right" th:href="@{/index}">Home</a>
             </span>
-        </footer>
+
     </div>
 </div>
 </body>

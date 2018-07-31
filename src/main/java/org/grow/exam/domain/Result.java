@@ -8,6 +8,7 @@ package org.grow.exam.domain;
  */
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvDate;
 import lombok.Data;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -19,7 +20,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -38,7 +38,10 @@ public class Result {
     private String resultCode;
 
     private ClassInfo classInfo = new ClassInfo();
-
+    /**
+    **
+    * xieweig notes: 可以通过column来指定csv文件的列别名
+    */
     @CsvBindByName(column="memberCode")
     private String memberCode;
 
@@ -49,14 +52,14 @@ public class Result {
     * xieweig notes: json绑定用，不方便存入关系型数据库，方便存入nosql
     */
     @Transient
-    private List<String> wrongsCode = new ArrayList<>();
+    private List<String> wrongsList = new ArrayList<>();
     /**
     **
     * xieweig notes: 方便存入关系型数据库，不方便直接面向对象，不方便json绑定
     */
     @JsonIgnore
     @CsvBindByName
-    private String wrongs ;
+    private String wrongsString;
     /**
     **
     * xieweig notes: 引用一个工具类的数据，交给spring管理的单例bean，不映射json，不持久化到数据库。
@@ -74,10 +77,10 @@ public class Result {
     @PrePersist
     @PreUpdate
     public void beforeWrite(){
-        this.wrongs = StringUtils.arrayToCommaDelimitedString(this.wrongsCode.toArray());
-        this.setClassInfo(standardAnswer.getClassInfo());
+        this.wrongsString = StringUtils.arrayToCommaDelimitedString(this.wrongsList.toArray());
+
         this.setExamFinishTime(LocalDateTime.now());
-        this.setTotalScore(100 - this.getWrongsCode().size() *100 /standardAnswer.getCorrectAnswers().size());
+        this.setTotalScore(100 - this.getWrongsList().size() *100 /standardAnswer.getCorrectAnswers().size());
 
     }
     /**
@@ -87,7 +90,7 @@ public class Result {
      */
     @PostLoad
     public void AfterRead(){
-        this.wrongsCode = Arrays.asList(StringUtils.commaDelimitedListToStringArray(this.wrongs));
+        this.wrongsList = Arrays.asList(StringUtils.commaDelimitedListToStringArray(this.wrongsString));
     }
     /**
     **
@@ -96,5 +99,6 @@ public class Result {
     @CsvBindByName
     private String message;
 
+    @CsvBindByName
     private LocalDateTime examFinishTime;
 }

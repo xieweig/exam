@@ -13,6 +13,8 @@
         <h1>教师界面，请于此导入试题，开放考试，结束考试，导出成绩单</h1>
     </div>
     <div th:replace="fragments/inout :: file-confirm"></div>
+    <span><br/></span>
+    <div th:replace="fragments/inout :: file-export"></div>
     <div>如下是刚才导入的试题表，学生访问看到的将会是同样的表，在您没有点击 开放考试 之前，您可以看到试题，学生依旧看不到</div>
     <div th:replace="fragments/table :: question-table(forStudent= false)"></div>
     <div>这里是正确答案，ABCD 分别对应 二进制1000 0100 0010 0001 也就是 8421 </div>

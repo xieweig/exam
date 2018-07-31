@@ -11,7 +11,8 @@
 <div th:replace="fragments/header :: header"></div>
 <div class="container">
     <div class="starter-template">
-        <h1>教师界面，请于此导入试题，开放考试，结束考试，导出成绩单</h1>
+        <h1>教师界面，请于此导入试题，开放考试，结束考试，导出成绩单, 清空数据库</h1>
+        <!--结束考试的本质是阻止学生上传成绩，导出成绩单的本质是在主机本地生成csv文件 通过页面化下载成绩单-->
     </div>
     <div th:replace="fragments/inout :: file-upload"></div>
 </div>
