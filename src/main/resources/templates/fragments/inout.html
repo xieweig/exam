@@ -102,8 +102,11 @@
         <button id="lockButton" onclick="closeExam()"  class="btn btn-secondary  pull-right" >关闭考试停止学生交卷</button>
     </div>
     <div class="form-group">
-        <a id="exportResults" th:href="@{/trainer/csvResults}" target="_blank" class="btn btn-info pull-right" onclick="enableDelete()" > 结束考试并生成导出考试结果 </a>
+        <a id="exportResults" th:href="@{/trainer/csvResults}" target="_blank" class="btn btn-info pull-right" onclick="enable()" > 结束考试并生成导出考试结果 </a>
 
+    </div>
+    <div class="form-group">
+        <a id="analysisResults" th:href="@{/trainer/analysis}" target="_blank" class="btn btn-done pull-right" disabled="disabled" > 简略分析考试成绩信息 </a>
     </div>
     <div  class="form-group">
         <button id="deleteResults" onclick="deleteResults()"  class="btn btn-warning  pull-right" disabled="disabled" >清空考试成绩数据库表 方便下一场次考试</button>
@@ -127,8 +130,9 @@
                 }
             })
         }
-        var enableDelete = function () {
+        var enable = function () {
             $('#deleteResults').attr("disabled",false);
+            $('#analysisResults').attr("disabled",false);
         }
         var deleteResults = function () {
 

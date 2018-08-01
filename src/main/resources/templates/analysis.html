@@ -1,26 +1,17 @@
-
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>403</title>
-
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.1.0/css/bootstrap.css}" />
     <script type="text/javascript" th:src="@{/webjars/jquery/3.0.0/jquery.js}"></script>
     <script type="text/javascript" th:src="@{/webjars/bootstrap/4.1.0/js/bootstrap.js}"></script>
 </head>
 <body>
 <div th:replace="fragments/header :: header"></div>
+<div th:replace="fragments/message :: message"></div>
 
-<div class="container">
-    <div class="starter-template">
-        <h1>403 - 没有访问权限</h1>
-        <div th:inline="text">Hello '[[${#httpServletRequest.remoteUser}]]',
-           服务器发生错误 或者 你没有权限访问此页面.</div>
-    </div>
-</div>
-<!-- /.container -->
+
+
 <div th:replace="fragments/footer :: footer"></div>
-
 </body>
 </html>

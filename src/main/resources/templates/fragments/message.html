@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<div th:fragment="message">
+    <table class="table table-striped">
+        <tr>
+            <th>分析内容</th>
+            <th>分析结果</th>
+        </tr>
+        <tr class="table-row-cell" th:each="answer : ${reduce}">
+            <td th:text="${answer.key}">000</td>
+            <td th:text="${answer.value}">试题题目加载错误</td>
+        </tr>
+    </table>
+    <script type="application/javascript" th:inline="javascript">
+
+
+
+    </script>
+</div>
+
+</body>
