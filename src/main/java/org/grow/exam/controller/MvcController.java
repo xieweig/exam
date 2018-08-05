@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -84,6 +89,27 @@ public class MvcController {
     @RequestMapping("/403")
     public String error403() {
         return "error";
+    }
+    @GetMapping("/student")
+    public ModelAndView listDir(){
+        Path base = Paths.get(System.getProperty("user.home"));
+
+        List<String> files = new LinkedList<>();
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(base)) {
+            for (Path file : directoryStream) {
+                if (Files.isRegularFile(file))
+                files.add(file.getFileName().toString());
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(files);
+        return new ModelAndView("download",new HashMap<String, Object>(){{
+            put("files",files);
+            put("userHome",base.toString());
+        }});
+
     }
 
 }

@@ -242,7 +242,7 @@ public class ExamHandler {
             e.printStackTrace();
         }
 
-        return new ResponseEntity<byte[]>(Files.readAllBytes(file),new HttpHeaders(){{
+        return new ResponseEntity<>(Files.readAllBytes(file),new HttpHeaders(){{
             setContentType(MediaType.APPLICATION_OCTET_STREAM);
             setContentDispositionFormData("attachment", standardAnswer.getClassInfo().toString()+".csv");
         }},HttpStatus.OK);

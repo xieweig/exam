@@ -1,16 +1,25 @@
 package org.grow.exam.controller;
 
 
+import org.grow.exam.domain.GlobalVar;
 import org.grow.exam.domain.Result;
 import org.grow.exam.infrastruture.JpaResult;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,9 +42,10 @@ public class UltraFunction {
         * xieweig notes: 统计成绩平均分 各个分数段人数 错的最多的题目前五个
         */
         List<Result> results = jpaResult.findAll();
+        results.sort(Comparator.comparing(Result::getTotalScore));
         IntSummaryStatistics summary = results.stream().collect(Collectors.summarizingInt(Result::getTotalScore));
 
-        return new ModelAndView("analysis.html",new HashMap<String, Object>(){{
+        return new ModelAndView("analysis",new HashMap<String, Object>(){{
             put("reduce", new TreeMap<String ,Object>(){{
                 put("01 考试人数 number",summary.getCount());
                 put("02 平均分 average",summary.getAverage());
@@ -47,12 +57,57 @@ public class UltraFunction {
                 put("13 60分以下 below60",results.stream().filter(x-> x.getTotalScore()<60).count());
 
             }});
+            put("results",results);
 
         }});
     }
+
+
+
     @PostMapping("/trainer/emailResults")
     @ResponseBody
     public String email(){
         return  "-----";
     }
+    /**
+    **
+    * xieweig notes: 学生下载某个文件
+    */
+    @Resource
+    private GlobalVar globalVar;
+    @ResponseBody
+    @PostMapping("/admin/switchDownload")
+    private Boolean switchDownload(){
+        globalVar.setEnableDownload(!globalVar.getEnableDownload());
+        return globalVar.getEnableDownload();
+    }
+
+    @GetMapping("/student/download/{fileName}")
+    public ResponseEntity<byte[]> download(@PathVariable String fileName) throws IOException {
+
+        if (!globalVar.getEnableDownload()) return  new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
+        Path base = Paths.get(System.getProperty("user.home"));
+        if (StringUtils.isEmpty(fileName)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        Path file = base.resolve(fileName);
+        if (Files.notExists(file)) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+
+        return new ResponseEntity<>(Files.readAllBytes(file),new HttpHeaders(){{
+            setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            setContentDispositionFormData("attachment",fileName);
+        }}, HttpStatus.OK);
+    }
+
+    @GetMapping("/trainer/template")
+    public ResponseEntity<byte[]> getExcelTemplate() throws IOException {
+        Path template = Paths.get(new ClassPathResource("static/test_content.xlsx").getPath());
+
+        return new ResponseEntity<>(Files.readAllBytes(template),new HttpHeaders(){{
+            setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            setContentDispositionFormData("attachment",template.getFileName().toString());
+        }},HttpStatus.OK);
+    }
+
 }

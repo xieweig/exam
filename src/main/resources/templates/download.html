@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.1.0/css/bootstrap.css}" />
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.0.0/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.1.0/js/bootstrap.js}"></script>
+</head>
+
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+
+
+<div class="container">
+    <div class="starter-template">
+        <h1>学生界面，可以下载文件 进行考试</h1>
+    </div>
+</div>
+
+<div>
+    <div class="text-sm-center text-dark">下载功能默认开启 管理员可以关闭</div>
+    <ul th:each="fileName :${files}" class="list-unstyled">
+        <li><a th:text="${fileName}" th:href="@{/student/download/{fileName}(fileName=${fileName})}"
+                target="_blank" class="btn btn-info pull-right"></a></li>
+    </ul>
+</div>
+
+<div class="text-md-center text-primary">以上是教师机 <div th:text="${userHome}"></div> 目录下的文件 不包含目录哟</div>
+<br/>
+<br/>
+<div>
+    <a th:href="@{/student/start}" target="_blank" class="btn btn-primary pull-right" >进入考试</a>
+</div>
+
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

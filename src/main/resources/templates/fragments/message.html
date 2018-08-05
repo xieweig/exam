@@ -23,5 +23,33 @@
 
     </script>
 </div>
+<div th:fragment="results">
+    <table class="table table-striped">
+        <tr>
+            <th>考试学号</th>
+            <th>考生信息</th>
+            <th>考试成绩</th>
+            <th>交卷时间</th>
+            <th>错题列表</th>
+        </tr>
+        <tr class="table-row-cell" th:each="result : ${results}">
+            <td th:text="${result.memberCode}">000</td>
+            <td th:text="${result.message}">试题题目加载错误</td>
+            <td th:text="${result.totalScore}">000</td>
+            <td th:text="${result.examFinishTime}">
+            </td>
+            <td>
+                <select >
+                    <option th:each = "wrongCode : ${result.wrongsList}" th:text="${wrongCode}"></option>
+                </select>
+            </td>
 
+        </tr>
+    </table>
+    <script type="application/javascript" th:inline="javascript">
+
+
+
+    </script>
+</div>
 </body>

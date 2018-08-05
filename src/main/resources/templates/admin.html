@@ -12,11 +12,37 @@
 <div class="container">
     <div class="starter-template">
         <h1>管理员界面，可以开放下载某个文件 上传文件到服务器某目录 </h1>
-    </div>
-    <a class="btn btn-done" th:href="@{/swagger-ui.html}">swagger2</a>
+    </div>>
+
 </div>
 
 
+<div  class="form-group">
+    <button id="switchDownload" onclick="switchDownload()"  class="btn btn-warning  pull-right" >关闭文件下载功能</button>
+</div>
+<script type="application/javascript" th:inline="javascript">
+    var switchUrl ="/admin/switchDownload";
+
+    var switchDownload = function () {
+        $.ajax({
+            type: 'post',
+            url: switchUrl,
+            contentType: 'application/json',
+            dataType: 'json',
+
+            success: function (data) {
+
+                console.log(data);
+
+                $("#switchDownload").text(data?"关闭文件下载功能":"打开文件下载功能");
+            }
+        })
+    }
+
+
+</script>
+
+<a class="btn btn-done" th:href="@{/swagger-ui.html}">swagger2</a>
 <div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>
