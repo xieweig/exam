@@ -166,7 +166,15 @@ public class ExamHandler {
         */
         Map<String,Integer> answers = answerSheet.getAnswers();
         Map<String,Integer> correctAnswers = standardAnswer.getCorrectAnswers();
-        for (String key : answers.keySet()) {
+        for (String key : correctAnswers.keySet()) {
+            /**
+            **
+            * xieweig notes: 这个if应对答题卡有没填写的情况 为什么不写在一起 防止思维混乱 也可以声明一个boolean存储
+            */
+            if (!answers.containsKey(key)){
+                result.getWrongsList().add(key);
+                continue;
+            }
             /**
             **
             * xieweig notes: 如果不符合正确答案，那么就认为错误，此处只要求答题卡是单选题，正确答案可以是多个 例如答题卡选A正确答案是AC
@@ -194,7 +202,7 @@ public class ExamHandler {
         result.setMessage(answerSheet.getName()+ "留言："+answerSheet.getRemarks());
 
         result.setResultCode(randomString.random5String("Result"));
-        System.out.println(result);
+       // System.out.println(result);
         return jpaResult.save(result);
 
 

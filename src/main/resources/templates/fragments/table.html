@@ -84,7 +84,7 @@
                 for (var i = 2; i < tableObj.rows.length; i+=2) {
 
                     var questionCode = tableObj.rows[i-1].cells[0].innerHTML;
-                    var answer;
+                    var answer = 0;
                     var radios = document.getElementsByName(questionCode);
 
                     for (var k = 0; k< radios.length; k++){
