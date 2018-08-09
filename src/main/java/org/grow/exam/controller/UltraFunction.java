@@ -102,8 +102,16 @@ public class UltraFunction {
 
     @GetMapping("/trainer/template")
     public ResponseEntity<byte[]> getExcelTemplate() throws IOException {
-        Path template = Paths.get(new ClassPathResource("static/test_content.xlsx").getPath());
-
+        /**
+        **
+        * xieweig notes: 路径这种东西页很麻烦 下面的一个是正确的 classpath 先转file 再转path 可以自己去掉注释看一看
+         * static/test_content.xlsx ===》》 temp
+         * /home/xieweig/Downloads/horrible/exam/target/classes/static/test_content.xlsx ===》》template
+        */
+/*      Path temp = Paths.get(new ClassPathResource("static/test_content.xlsx").getPath());
+        System.out.println(temp.toString());*/
+        Path template =  new ClassPathResource("static/test_content.xlsx").getFile().toPath();
+        //System.out.println(template.toString());
         return new ResponseEntity<>(Files.readAllBytes(template),new HttpHeaders(){{
             setContentType(MediaType.APPLICATION_OCTET_STREAM);
             setContentDispositionFormData("attachment",template.getFileName().toString());

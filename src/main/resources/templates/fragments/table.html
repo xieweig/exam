@@ -11,7 +11,7 @@
         <table id="tableInfo" class="table table-striped" width="100%" >
             <thead class="thead-inverse">
             <tr>
-                <th>题目</th>
+                <th>Question</th>
                 <th>选项A</th>
                 <th>选项B</th>
                 <th>选项C</th>
@@ -59,18 +59,18 @@
             </tbody>
         </table>
         <div th:if="${forStudent}" class="form-group col-lg-6" >
-            <label for="memberCode" class="text-secondary text-info" >学号： </label>
+            <label for="memberCode" class="text-secondary text-info" >学号 memberCode： </label>
             <input type="text" name="memberCode" class="form-control" id="memberCode" placeholder=201640704321 style="width:120px; height:38px"/>
 
-            <label for="name"  class="text-secondary text-info">姓名： </label>
-            <input type="text" name="name" class="form-control" id="name" placeholder=高利贷 style="width:100px; height:38px"/>
+            <label for="name"  class="text-secondary text-info">姓名 name： </label>
+            <input type="text" name="name" class="form-control" id="name" placeholder=Lucifer style="width:100px; height:38px"/>
 
-            <label for="remarks"  class="text-secondary text-info">留言： </label>
+            <label for="remarks"  class="text-secondary text-info">留言 message： </label>
             <input type="text" name="remarks" class="form-control" id="remarks" placeholder='可以随便写点，可以不写' style="width:200px; height:38px"/>
         <button th:if="${examClosed==false}" type="button" id="student-finish" class="btn btn-primary pull-right" onclick="finish()">结束考试，提交答案</button>
         <!--th:if="${examClosed}"-->
         </div>
-        <div id = "small-console" class="form-group col-lg-6" >"小型控制台"</div>
+     <!--  <div id = "small-console" class="form-group col-lg-6" >"小型控制台"</div>-->
         <script type="application/javascript" th:inline="javascript">
             var finish = function () {
 

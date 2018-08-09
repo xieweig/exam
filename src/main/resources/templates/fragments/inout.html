@@ -10,21 +10,24 @@
 
         <!-- COMPONENT START -->
     <div class="form-group col-lg-6" >
-        <input type="button" id="browse" value="浏览待上传文件: " class="btn btn-success" onclick="$('#upload-file').click();"><br/><br/>
+        <input type="button" id="browse" value="browse file to upload： " class="btn btn-success" onclick="$('#upload-file').click();"><br/><br/>
         <input id='location' class="form-control"  placeholder='Choose an excel file...' disabled>
         <input type="file" id='upload-file' name="file" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onchange="$('#location').val($('#upload-file').val());" style="display: none">
     </div><br/>
 
     <div class="form-group col-lg-4">
-        <label for="startRow" class="text-secondary text-info" >startRow: 从excel文件哪一行开始读取...</label>
-        <input type="number" name="startRow" class="form-control" id="startRow" placeholder=1 style="width:100px; height:38px"/>
-        <label for="size"  class="text-secondary text-info">size: 考试试题数是...</label>
-        <input type="number" name="size" class="form-control" id="size" placeholder=20 style="width:100px; height:38px"/>
+        <label for="startRow" class="text-secondary text-info" >startRow: read from ...</label>
+        <input type="number" name="startRow" class="form-control" id="startRow" placeholder=1 style="width:100px; height:38px" value=1/>
+        <label for="size"  class="text-secondary text-info">size: total questions number...</label>
+        <input type="number" name="size" class="form-control" id="size" placeholder=20 style="width:100px; height:38px" value="20"/>
     </div>
         <!-- COMPONENT END -->
     <div class="form-group">
           <button type="submit" id="submit-questions" class="btn btn-primary pull-right">Submit</button>
           <button type="reset" class="btn btn-danger">Reset</button>
+    </div>
+    <div class="form-group" >helper：
+        <a th:href="@{/trainer/template}">export excel template</a>
     </div>
     </form>
 
@@ -34,6 +37,7 @@
 
 <div th:fragment="file-confirm">
     <div>请依次填写考试基本信息 考试班级 考试科目 考试场次，之后点击按钮开始考试，学生将会看到考试题目</div>
+    <div>please filled with  basic info : grade   subject  MT-times ,then click the button to start exam </div>
     <div class="form-group">
         <select name="grade" id="grade" class="form-control input-lg"
                required="true" >
@@ -48,10 +52,10 @@
     </div>
     <div class="form-group">
         <input type="number" name="times" id="times" class="form-control input-lg"
-               placeholder="请输入考试场次" required="true"/>
+               placeholder="请输入考试场次times" required="true"/>
     </div>
 
-    <button id="openTest" type="button" onclick="openTest()" class="btn btn-primary pull-right" > 提交考试信息并开放考试<p id="isOpen">未开放</p> </button>
+    <button id="openTest" type="button" onclick="openTest()" class="btn btn-primary pull-right" > 提交考试信息并开放考试 ready and open exam<p id="isOpen">未开放states: closed</p></button>
 
     <script type="application/javascript" th:inline="javascript">
         var openTest = function () {
@@ -82,7 +86,7 @@
                 },
                 success: function (data) {
                     console.log("back",data);
-                    $("#isOpen").text("已开放");
+                    $("#isOpen").text("已开放states: opened;if wanna close; Reupload");
                     $("#openTest").attr("disabled",true);
                     //$("#exportResults").attr("disabled",false);
 
@@ -99,17 +103,17 @@
 
 <div th:fragment="file-export">
     <div  class="form-group">
-        <button id="lockButton" onclick="closeExam()"  class="btn btn-secondary  pull-right" >关闭考试停止学生交卷</button>
+        <button id="lockButton" onclick="closeExam()"  class="btn btn-secondary  pull-right" >关闭考试停止学生交卷 refuse student to submit</button>
     </div>
     <div class="form-group">
-        <a id="exportResults" th:href="@{/trainer/csvResults}" target="_blank" class="btn btn-info pull-right" onclick="enable()" > 结束考试并生成导出考试结果 </a>
+        <a id="exportResults" th:href="@{/trainer/csvResults}" target="_blank" class="btn btn-info pull-right" onclick="enable()" >结束考试并生成导出考试结果 exam over and export the result.csv</a>
 
     </div>
     <div class="form-group">
-        <a id="analysisResults" th:href="@{/trainer/analysis}" target="_blank" class="btn btn-done pull-right" disabled="disabled" > 简略分析考试成绩信息 </a>
+        <a id="analysisResults" th:href="@{/trainer/analysis}" target="_blank" class="btn btn-done pull-right" disabled="disabled" >简略分析考试成绩信息 simple analysis about the score</a>
     </div>
     <div  class="form-group">
-        <button id="deleteResults" onclick="deleteResults()"  class="btn btn-warning  pull-right" disabled="disabled" >清空考试成绩数据库表 方便下一场次考试</button>
+        <button id="deleteResults" onclick="deleteResults()"  class="btn btn-warning  pull-right" disabled="disabled" >清空考试成绩数据库表 方便下一场次考试 clean the database table of result</button>
     </div>
     <script type="application/javascript" th:inline="javascript">
         var lockUrl ="/trainer/closeExam";
@@ -126,7 +130,7 @@
 
                     console.log(lockUrl);
 
-                    $("#lockButton").text(data?"暂时允许学生交卷":"关闭考试停止学生交卷");
+                    $("#lockButton").text(data?"暂时允许学生交卷allow student to submit":"关闭考试停止学生交卷 refuse student to submit");
                 }
             })
         }
@@ -143,7 +147,7 @@
                 dataType: 'json',
 
                 success: function () {
-                        alert("已经清空考试成绩信息。唯一作用是方便下一场考试")
+                        alert("已经清空考试成绩信息。唯一作用是方便下一场考试 clean up")
                 }
             })
         }

@@ -26,11 +26,11 @@
 <div th:fragment="results">
     <table class="table table-striped">
         <tr>
-            <th>考试学号</th>
-            <th>考生信息</th>
-            <th>考试成绩</th>
-            <th>交卷时间</th>
-            <th>错题列表</th>
+            <th>考试学号 memberCode</th>
+            <th>考生信息 basic info</th>
+            <th>考试成绩 score </th>
+            <th>交卷时间 submit time</th>
+            <th>错题列表 wrongs list</th>
         </tr>
         <tr class="table-row-cell" th:each="result : ${results}">
             <td th:text="${result.memberCode}">000</td>
