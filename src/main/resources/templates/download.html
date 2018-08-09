@@ -18,21 +18,22 @@
         <h1>Student interface, you can download files for exams</h1>
     </div>
 </div>
-
+<div class="text-md-center">
+    <a th:href="@{/student/start}" target="_blank" class="btn btn-primary pull-right" >进入考试</a>
+</div>
+<br/>
 <div>
-    <div class="text-sm-center text-dark">下载功能默认开启 管理员可以关闭</div>
+    <div class="text-sm-center text-info">下载功能默认开启 管理员可以关闭</div>
     <ul th:each="fileName :${files}" class="list-unstyled">
-        <li><a th:text="${fileName}" th:href="@{/student/download/{fileName}(fileName=${fileName})}"
-                target="_blank" class="btn btn-info pull-right"></a></li>
+        <li class="text-md-center"><a th:text="${fileName}" th:href="@{/student/download/{fileName}(fileName=${fileName})}"
+                target="_blank" class="btn btn-info text-md-center"></a></li>
     </ul>
 </div>
 
 <div class="text-md-center text-primary">以上是教师机 <div th:text="${userHome}"></div> 目录下的文件 不包含目录哟</div>
 <br/>
 <br/>
-<div>
-    <a th:href="@{/student/start}" target="_blank" class="btn btn-primary pull-right" >进入考试</a>
-</div>
+
 
 
 <div th:replace="fragments/footer :: footer"></div>
