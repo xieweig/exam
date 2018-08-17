@@ -1,6 +1,6 @@
 package org.grow.exam.domain;
 
-import com.opencsv.bean.CsvBindByName;
+
 import lombok.Data;
 
 import javax.persistence.Embeddable;
@@ -15,10 +15,9 @@ import javax.persistence.Embeddable;
 @Data
 public class ClassInfo {
 
-    @CsvBindByName
+
     private Grade grade = Grade.java1;
 
-    @CsvBindByName
     private StudentSubject subject = StudentSubject.spring;
 
 
@@ -31,7 +30,7 @@ public class ClassInfo {
     public enum  StudentSubject {
         uml, junit, spring, html,javase1,javase2,php,hibernate
     }
-    @CsvBindByName
+
     private Integer times = 1;
 
 }

@@ -9,6 +9,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.grow.exam.domain.*;
+import org.grow.exam.domain.dto.CSVResult;
 import org.grow.exam.infrastruture.JpaQuestion;
 import org.grow.exam.infrastruture.JpaResult;
 import org.grow.exam.infrastruture.PoiQuestion;
@@ -242,8 +243,9 @@ public class ExamHandler {
 
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(file)
         ){
-            StatefulBeanToCsv<Result> beanToCsv = new StatefulBeanToCsvBuilder<Result>(bufferedWriter).build();
-            beanToCsv.write(jpaResult.findAll(Sort.by(Sort.Direction.ASC,"memberCode")));
+            StatefulBeanToCsv<CSVResult> beanToCsv = new StatefulBeanToCsvBuilder<CSVResult>(bufferedWriter).build();
+            beanToCsv.write(jpaResult.findAll(Sort.by(Sort.Direction.ASC,"memberCode"))
+                    .stream().map((x)-> CSVResult.getInstanceFrom(x,standardAnswer)).collect(Collectors.toList()));
             bufferedWriter.flush();
 
         }catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e){
