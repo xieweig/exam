@@ -17,6 +17,9 @@ public class GlobalVar {
 
     private Boolean enableDownload = true;
 
+    private byte[] tempFile = null;
+
+    private String tempFileName= "";
 
 
 }

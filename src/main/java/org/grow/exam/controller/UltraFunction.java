@@ -125,8 +125,12 @@ public class UltraFunction {
         Path file = base.resolve(fileName);
         if (Files.notExists(file)) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
+        if (!fileName.equals(globalVar.getTempFileName())){
+            globalVar.setTempFile(Files.readAllBytes(file));
+            globalVar.setTempFileName(fileName);
+        }
 
-        return new ResponseEntity<>(Files.readAllBytes(file),new HttpHeaders(){{
+        return new ResponseEntity<>(globalVar.getTempFile(),new HttpHeaders(){{
             setContentType(MediaType.APPLICATION_OCTET_STREAM);
             setContentDispositionFormData("attachment",fileName);
         }}, HttpStatus.OK);

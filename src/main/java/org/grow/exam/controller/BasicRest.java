@@ -4,6 +4,9 @@ import org.grow.exam.domain.Question;
 import org.grow.exam.domain.Result;
 import org.grow.exam.infrastruture.JpaQuestion;
 import org.grow.exam.infrastruture.JpaResult;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +33,13 @@ public class BasicRest {
     public List<Question> getAllQuestions(){
         return jpaQuestion.findAll();
     }
+
+    @PostMapping(value = "/questions")
+    public Page<Question> getPageQuestions(@RequestParam Integer page ,@RequestParam Integer size){
+        Pageable pageable = PageRequest.of(page,size);
+        return jpaQuestion.findAll(pageable);
+    }
+
     @Transactional
     @DeleteMapping(value = "/questions" )
     public List<Question> deleteAllQuestions(){
