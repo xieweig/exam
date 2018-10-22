@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -115,7 +116,7 @@ public class UltraFunction {
     }
 
     @GetMapping("/student/download/{fileName}")
-    public ResponseEntity<byte[]> download(@PathVariable String fileName) throws IOException {
+    public ResponseEntity<byte[]> download(@PathVariable String fileName, HttpServletResponse response) throws IOException {
 
         if (!globalVar.getEnableDownload()) return  new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
@@ -124,16 +125,42 @@ public class UltraFunction {
 
         Path file = base.resolve(fileName);
         if (Files.notExists(file)) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        //如果小于50M的文文件，存入缓存中下载
+        if (Files.size(file) <= 50*1024*1024) {
+            if (!fileName.equals(globalVar.getTempFileName())) {
+                globalVar.setTempFile(Files.readAllBytes(file));
+                globalVar.setTempFileName(fileName);
+            }
 
-        if (!fileName.equals(globalVar.getTempFileName())){
-            globalVar.setTempFile(Files.readAllBytes(file));
-            globalVar.setTempFileName(fileName);
+            return new ResponseEntity<>(globalVar.getTempFile(), new HttpHeaders() {{
+                setContentType(MediaType.APPLICATION_OCTET_STREAM);
+                setContentDispositionFormData("attachment", fileName);
+            }}, HttpStatus.OK);
         }
+        //如果大于50M的文件，通过buffer下载
+        response.reset();
+        response.setContentType("application/x-download");
+        response.addHeader("Content-Length",""+Files.size(file));
+        response.addHeader("Content-Disposition","attachment:filename="+file.getFileName());
+        response.setContentType("application/octet-stream");
 
-        return new ResponseEntity<>(globalVar.getTempFile(),new HttpHeaders(){{
-            setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            setContentDispositionFormData("attachment",fileName);
-        }}, HttpStatus.OK);
+
+        byte[] buffer = new byte[20*1024*1024];
+        try(BufferedInputStream in = new BufferedInputStream(Files.newInputStream(file));
+            BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());
+        ){
+                        int i= -1;
+                        while((i=in.read(buffer)) != -1){
+                            out.write(buffer,0,i);
+                        }
+                        out.flush();
+                        response.wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+
     }
 
     @GetMapping("/trainer/template")

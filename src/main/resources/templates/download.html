@@ -24,8 +24,8 @@
 <br/>
 <div>
     <div class="text-sm-center text-info">download area 下载功能默认开启 管理员可以关闭 download function default enable ; manager can disable</div>
-    <ul th:each="fileName :${files}" class="list-unstyled">
-        <li class="text-md-center"><a th:text="${fileName}" th:href="@{/student/download/{fileName}(fileName=${fileName})}"
+    <ul class="list-group">
+        <li th:each="fileName :${files}" class="text-md-center"><a th:text="${fileName}" th:href="@{/student/download/{fileName}(fileName=${fileName})}"
                 target="_blank" class="btn btn-info text-md-center"></a></li>
     </ul>
 </div>
