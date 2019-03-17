@@ -29,13 +29,13 @@ public class Question {
     private String questionCode;
     @Column(length = 1024)
     private String title;
-
+    @Column(length = 1024)
     private String optionA;
-
+    @Column(length = 1024)
     private String optionB;
-
+    @Column(length = 1024)
     private String optionC;
-
+    @Column(length = 1024)
     private String optionD;
 
     private String remarks;
