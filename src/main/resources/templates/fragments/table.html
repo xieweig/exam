@@ -83,8 +83,13 @@
      <!--  <div id = "small-console" class="form-group col-lg-6" >"小型控制台"</div>-->
         <script type="application/javascript" th:inline="javascript">
             var finish = function () {
+                if (document.getElementById("memberCode").value==""){
+                    alert("请输入学号等信息");
+                    return;
+                }
 
                 if(! confirm("确是要提交?")) return;
+
 
                 var answers = {};
 
@@ -109,7 +114,6 @@
 
 
                 }
-                //熟悉一下h5 很重要的一个对象localStorage
                 window.localStorage.setItem("answers",answers);
 
                 var dataToSend = {
@@ -131,10 +135,9 @@
 
                     beforeSend: function(){
                         //开始请求之前
-                        console.log(dataToSend);
                         console.log(JSON.stringify(dataToSend));
                         document.getElementById("student-finish").disabled = true;
-                       // document.getElementById("student-finish").text = "大吉大利";
+                       
 
                     },
                     success: function (data) {
@@ -144,6 +147,9 @@
                             document.getElementById("student-finish").disabled = false;
                         }
 
+                    },
+                    error:function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("错误!"+XMLHttpRequest.status+"???"+errorThrown);
                     }
 
                 });

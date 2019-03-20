@@ -17,9 +17,9 @@
 
     <div class="form-group col-lg-4">
         <label for="startRow" class="text-secondary text-info" >startRow: read from ...</label>
-        <input type="number" name="startRow" class="form-control" id="startRow" placeholder=1 style="width:100px; height:38px" value=1/>
+        <input type="number" name="startRow" class="form-control" id="startRow"  style="width:100px; height:38px" value="1"/>
         <label for="size"  class="text-secondary text-info">size: total questions number...</label>
-        <input type="number" name="size" class="form-control" id="size" placeholder=20 style="width:100px; height:38px" value="20"/>
+        <input type="number" name="size" class="form-control" id="size" style="width:100px; height:38px" value="20"/>
     </div>
         <!-- COMPONENT END -->
     <div class="form-group">
@@ -52,7 +52,7 @@
     </div>
     <div class="form-group">
         <input type="number" name="times" id="times" class="form-control input-lg"
-               placeholder="请输入考试场次times" required="true"/>
+               placeholder="请输入考试场次times" required="true" value="1"/>
     </div>
 
     <button id="openTest" type="button" onclick="openTest()" class="btn btn-primary pull-right" > 提交考试信息并开放考试 ready and open exam<p id="isOpen">未开放states: closed</p></button>
@@ -102,19 +102,24 @@
 </div>
 
 <div th:fragment="file-export">
+    <div class="form-group">
+        <a id="analysisResults" th:href="@{/trainer/analysis}" target="_blank" class="btn btn-dark pull-right" disabled="disabled" >监控分析考试成绩信息 simple analysis about the score</a>
+    </div>
+
     <div  class="form-group">
         <button id="lockButton" onclick="closeExam()"  class="btn btn-secondary  pull-right" >关闭考试停止学生交卷 refuse student to submit</button>
     </div>
     <div class="form-group">
         <a id="exportResults" th:href="@{/trainer/csvResults}" target="_blank" class="btn btn-info pull-right" onclick="enable()" >结束考试并生成导出考试结果 exam over and export the result.csv</a>
-
     </div>
-    <div class="form-group">
-        <a id="analysisResults" th:href="@{/trainer/analysis}" target="_blank" class="btn btn-dark pull-right" disabled="disabled" >简略分析考试成绩信息 simple analysis about the score</a>
-    </div>
+    <!--<div class="form-group">-->
+        <!--<a id="analysisResults" th:href="@{/trainer/analysis}" target="_blank" class="btn btn-dark pull-right" disabled="disabled" >简略分析考试成绩信息 simple analysis about the score</a>-->
+    <!--</div>-->
     <div  class="form-group">
         <button id="deleteResults" onclick="deleteResults()"  class="btn btn-warning  pull-right" disabled="disabled" >清空考试成绩数据库表 方便下一场次考试 clean the database table of result</button>
     </div>
+
+
     <script type="application/javascript" th:inline="javascript">
         var lockUrl ="/trainer/closeExam";
 

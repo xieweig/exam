@@ -58,7 +58,6 @@ public class Result {
     * xieweig notes: 方便存入关系型数据库，不方便直接面向对象，不方便json绑定
     */
     @JsonIgnore
-    @CsvBindByName
     private String wrongsString;
     /**
     **
@@ -99,6 +98,6 @@ public class Result {
     @CsvBindByName
     private String message;
 
-    @CsvBindByName
+
     private LocalDateTime examFinishTime;
 }
